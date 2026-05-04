@@ -56,8 +56,8 @@ nav{position:fixed;inset:0 0 auto 0;height:64px;z-index:200;background:rgba(245,
 .nav-inner,.wrap,.hero{width:min(1120px,calc(100% - 32px));margin:0 auto;position:relative;z-index:1}
 .nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800}
-.brand-mark{width:30px;height:30px;border-radius:10px;background:var(--ink);display:grid;place-items:center}
-.brand-mark svg{width:16px;height:16px}
+.brand-mark{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;overflow:hidden;flex-shrink:0;background:var(--white);border:1px solid var(--border)}
+.brand-mark img{width:100%;height:100%;display:block;object-fit:contain;padding:2px}
 .nav-links{display:flex;align-items:center;gap:18px;list-style:none}
 .nav-links a{text-decoration:none;font-size:13px;font-weight:700;color:var(--muted)}
 .nav-links a:hover{color:var(--ink)}
@@ -122,7 +122,8 @@ h2{font-family:var(--serif);font-size:clamp(24px,3.2vw,40px);font-weight:600;lin
 .stat-label{font-size:13px;font-weight:700;color:var(--ink2)}
 .stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
 
-.about-grid,.stack-grid,.repo-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.about-grid,.repo-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.stack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .story-card,.impact-card,.repo-card,.stack-card,.value-card,.feature-card,.algo-card,.member-card,.api-item,.flow-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);box-shadow:var(--shadow-sm)}
 .story-card{padding:26px}
 .story-card p{font-size:15.5px;color:var(--ink3);line-height:1.82;margin-bottom:14px}
@@ -174,6 +175,12 @@ h2{font-family:var(--serif);font-size:clamp(24px,3.2vw,40px);font-weight:600;lin
 .api-path{flex:1;font-family:monospace;font-size:13px;color:var(--ink2)}
 .api-desc{font-size:12.5px;color:var(--muted);font-weight:600}
 
+.stack-preview{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:22px 0 18px}
+.stack-preview-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:14px 12px;box-shadow:var(--shadow-sm);text-align:center}
+.stack-preview-icon{width:42px;height:42px;border-radius:14px;margin:0 auto 10px;display:grid;place-items:center;font-size:16px;font-weight:800}
+.stack-preview-name{font-size:13px;font-weight:800;color:var(--ink2);margin-bottom:4px}
+.stack-preview-type{font-size:11px;color:var(--muted);font-weight:600}
+
 .stack-card{overflow:hidden}
 .stack-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
 .stack-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:18px}
@@ -185,12 +192,16 @@ h2{font-family:var(--serif);font-size:clamp(24px,3.2vw,40px);font-weight:600;lin
 .stack-version{font-size:11px;color:var(--muted);padding:2px 7px;border-radius:999px;background:var(--bg2)}
 .stack-role{font-size:12px;color:var(--muted)}
 
-.member-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.member-card{padding:22px;display:flex;gap:16px;align-items:center}
-.member-avatar{width:70px;height:70px;border-radius:18px;overflow:hidden;flex-shrink:0;border:1px solid var(--border)}
+.member-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.member-card{padding:22px;display:flex;gap:16px;align-items:center;position:relative;overflow:hidden}
+.member-card::before{content:"";position:absolute;inset:auto 0 0 0;height:3px;background:linear-gradient(90deg,var(--accent),#60a5fa);opacity:.7}
+.member-card.leader-card{grid-column:span 12;padding:26px;background:linear-gradient(135deg,#ffffff 0%,#f8fbff 100%)}
+.member-card.member-half{grid-column:span 6}
+.member-avatar{width:76px;height:76px;border-radius:20px;overflow:hidden;flex-shrink:0;border:1px solid var(--border);background:#ddd}
 .member-avatar img{width:100%;height:100%;object-fit:cover;display:block}
-.member-name{margin-bottom:4px}
-.member-role{margin-bottom:8px}
+.member-name{margin-bottom:4px;font-size:18px;font-weight:800;line-height:1.25}
+.member-role{margin-bottom:8px;font-size:13px;font-weight:700;letter-spacing:.3px;color:var(--accent);text-transform:uppercase}
+.member-copy{font-size:13px;color:var(--ink3);line-height:1.72;max-width:720px}
 .team-gallery{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-top:18px}
 .gallery-main,.gallery-small{position:relative;overflow:hidden;border-radius:var(--rl);border:1px solid var(--border);box-shadow:var(--shadow-sm);background:var(--white)}
 .gallery-main img,.gallery-small img{width:100%;height:100%;object-fit:cover;display:block}
@@ -220,7 +231,10 @@ footer{padding:28px 0 34px;border-top:1px solid var(--border);position:relative;
 .delay-1{transition-delay:.08s}.delay-2{transition-delay:.16s}.delay-3{transition-delay:.24s}
 
 @media(max-width:960px){
-  .hero,.about-grid,.stack-grid,.repo-grid,.feature-grid,.algo-grid,.value-grid,.member-grid,.team-gallery,.flow-grid,.foot{grid-template-columns:1fr}
+  .hero,.about-grid,.stack-grid,.repo-grid,.feature-grid,.algo-grid,.value-grid,.team-gallery,.flow-grid,.foot{grid-template-columns:1fr}
+  .stack-preview{grid-template-columns:repeat(3,1fr)}
+  .member-grid{grid-template-columns:1fr}
+  .member-card.leader-card,.member-card.member-half{grid-column:span 1}
   .gallery-col{grid-template-rows:none;grid-template-columns:1fr 1fr}
   .stats{grid-template-columns:repeat(2,1fr)}
   .cta-box{flex-direction:column;align-items:flex-start}
@@ -231,6 +245,7 @@ footer{padding:28px 0 34px;border-top:1px solid var(--border);position:relative;
   .api-item{flex-direction:column;align-items:flex-start}
   .stats{grid-template-columns:1fr}
   .member-card{align-items:flex-start}
+  .stack-preview{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
@@ -239,9 +254,7 @@ footer{padding:28px 0 34px;border-top:1px solid var(--border);position:relative;
 <nav>
   <div class="nav-inner">
     <a class="brand" href="#">
-      <span class="brand-mark">
-        <svg viewBox="0 0 15 15" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1.5" fill="white"/><rect x="8.5" y="1" width="5.5" height="5.5" rx="1.5" fill="white" opacity=".5"/><rect x="1" y="8.5" width="5.5" height="5.5" rx="1.5" fill="white" opacity=".5"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5" fill="white"/></svg>
-      </span>
+      <span class="brand-mark"><img src="team-photos/logo.png" alt="TaskSphere logo"/></span>
       <span>TaskSphere</span>
     </a>
     <ul class="nav-links">
@@ -783,6 +796,38 @@ return longest increasing streak in O(n)</div>
       <h2>Công nghệ sử dụng</h2>
       <p class="sec-desc">Stack được lựa chọn theo tiêu chí phù hợp với sản phẩm thực tế: dễ triển khai, dễ mở rộng và đủ chiều sâu kỹ thuật để đáp ứng các yêu cầu vận hành của hệ thống.</p>
     </div>
+    <div class="stack-preview fade delay-1">
+      <div class="stack-preview-card">
+        <div class="stack-preview-icon" style="background:var(--java-bg);color:var(--java)">J</div>
+        <div class="stack-preview-name">Java 21</div>
+        <div class="stack-preview-type">Backend Core</div>
+      </div>
+      <div class="stack-preview-card">
+        <div class="stack-preview-icon" style="background:#edfdf3;color:#15803d">SB</div>
+        <div class="stack-preview-name">Spring Boot</div>
+        <div class="stack-preview-type">Application Layer</div>
+      </div>
+      <div class="stack-preview-card">
+        <div class="stack-preview-icon" style="background:#eff6ff;color:#2563eb">N</div>
+        <div class="stack-preview-name">Next.js 15</div>
+        <div class="stack-preview-type">Frontend App</div>
+      </div>
+      <div class="stack-preview-card">
+        <div class="stack-preview-icon" style="background:#eff6ff;color:#3178c6">TS</div>
+        <div class="stack-preview-name">TypeScript</div>
+        <div class="stack-preview-type">Type Safety</div>
+      </div>
+      <div class="stack-preview-card">
+        <div class="stack-preview-icon" style="background:#fff2f2;color:#dc2626">R</div>
+        <div class="stack-preview-name">Redis 7</div>
+        <div class="stack-preview-type">Cache Layer</div>
+      </div>
+      <div class="stack-preview-card">
+        <div class="stack-preview-icon" style="background:#f5f3ff;color:#7c3aed">AI</div>
+        <div class="stack-preview-name">AI Services</div>
+        <div class="stack-preview-type">Planning & Insight</div>
+      </div>
+    </div>
     <div class="stack-grid fade delay-1" style="margin-top:22px">
       <div class="stack-card">
         <div class="stack-head">
@@ -823,6 +868,22 @@ return longest increasing streak in O(n)</div>
         <div class="stack-row"><span class="stack-dot" style="background:#10b981"></span><span class="stack-name">Recharts</span><span class="stack-version"></span><span class="stack-role">Reporting charts</span></div>
         <div class="stack-row"><span class="stack-dot" style="background:#ec4899"></span><span class="stack-name">i18next</span><span class="stack-version"></span><span class="stack-role">Song ngữ EN/VI</span></div>
       </div>
+
+      <div class="stack-card">
+        <div class="stack-head">
+          <div class="stack-icon" style="background:#f5f3ff;color:#7c3aed">∞</div>
+          <div>
+            <div class="stack-title">AI & Platform</div>
+            <div class="stack-sub">integration and delivery</div>
+          </div>
+        </div>
+        <div class="stack-row"><span class="stack-dot" style="background:#7c3aed"></span><span class="stack-name">LLM Planning Flow</span><span class="stack-version"></span><span class="stack-role">Analyze brief and generate plan</span></div>
+        <div class="stack-row"><span class="stack-dot" style="background:#1d4ed8"></span><span class="stack-name">Scoring Engine</span><span class="stack-version"></span><span class="stack-role">Skill, workload, difficulty matching</span></div>
+        <div class="stack-row"><span class="stack-dot" style="background:#0ea5e9"></span><span class="stack-name">Swagger / OpenAPI</span><span class="stack-version"></span><span class="stack-role">API documentation</span></div>
+        <div class="stack-row"><span class="stack-dot" style="background:#f59e0b"></span><span class="stack-name">Google OAuth</span><span class="stack-version"></span><span class="stack-role">Third-party authentication</span></div>
+        <div class="stack-row"><span class="stack-dot" style="background:#16a34a"></span><span class="stack-name">Docker</span><span class="stack-version"></span><span class="stack-role">Containerized deployment</span></div>
+        <div class="stack-row"><span class="stack-dot" style="background:#2563eb"></span><span class="stack-name">GitHub Pages</span><span class="stack-version"></span><span class="stack-role">Landing page publishing</span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -835,68 +896,44 @@ return longest increasing streak in O(n)</div>
       <p class="sec-desc">Phần này giới thiệu các thành viên tham gia phát triển TaskSphere. Vai trò được trình bày ngắn gọn để giữ bố cục rõ ràng và chuyên nghiệp hơn.</p>
     </div>
     <div class="member-grid fade delay-1" style="margin-top:22px">
-      <div class="member-card">
+      <div class="member-card leader-card">
         <div class="member-avatar"><img src="team-photos/LeThiBaoNhien.jpg" alt="Lê Thị Bảo Nhiên"/></div>
         <div>
           <div class="member-name">Lê Thị Bảo Nhiên</div>
           <div class="member-role">Leader</div>
-          <div class="member-tags">
-            <span class="member-tag">Spring Boot</span>
-            <span class="member-tag">Redis</span>
-            <span class="member-tag">Architecture</span>
-          </div>
+          <div class="member-copy">Phụ trách định hướng sản phẩm, kiến trúc hệ thống và tổ chức nội dung trình bày cho landing page của dự án.</div>
         </div>
       </div>
 
-      <div class="member-card">
+      <div class="member-card member-half">
         <div class="member-avatar"><img src="team-photos/HoTanDat.png" alt="Hồ Tấn Đạt"/></div>
         <div>
           <div class="member-name">Hồ Tấn Đạt</div>
           <div class="member-role">Member</div>
-          <div class="member-tags">
-            <span class="member-tag">Java</span>
-            <span class="member-tag">MySQL</span>
-            <span class="member-tag">API</span>
-          </div>
         </div>
       </div>
 
-      <div class="member-card">
+      <div class="member-card member-half">
         <div class="member-avatar"><img src="team-photos/LeMyHuyen.png" alt="Lê Mỹ Huyền"/></div>
         <div>
           <div class="member-name">Lê Mỹ Huyền</div>
           <div class="member-role">Member</div>
-          <div class="member-tags">
-            <span class="member-tag">Next.js</span>
-            <span class="member-tag">UI/UX</span>
-            <span class="member-tag">Responsive</span>
-          </div>
         </div>
       </div>
 
-      <div class="member-card">
+      <div class="member-card member-half">
         <div class="member-avatar"><img src="team-photos/NguyenHoangGiaHuy.png" alt="Nguyễn Hoàng Gia Huy"/></div>
         <div>
           <div class="member-name">Nguyễn Hoàng Gia Huy</div>
           <div class="member-role">Member</div>
-          <div class="member-tags">
-            <span class="member-tag">Testing</span>
-            <span class="member-tag">Realtime</span>
-            <span class="member-tag">Demo Flow</span>
-          </div>
         </div>
       </div>
 
-      <div class="member-card">
+      <div class="member-card member-half">
         <div class="member-avatar"><img src="team-photos/VoThiMyThanh.png" alt="Võ Thị Mỹ Thanh"/></div>
         <div>
           <div class="member-name">Võ Thị Mỹ Thanh</div>
           <div class="member-role">Member</div>
-          <div class="member-tags">
-            <span class="member-tag">Product Story</span>
-            <span class="member-tag">Pitch Support</span>
-            <span class="member-tag">Presentation</span>
-          </div>
         </div>
       </div>
     </div>
@@ -937,9 +974,7 @@ return longest increasing streak in O(n)</div>
 <footer>
   <div class="wrap foot">
     <a class="brand" href="#">
-      <span class="brand-mark">
-        <svg viewBox="0 0 15 15" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1.5" fill="white"/><rect x="8.5" y="1" width="5.5" height="5.5" rx="1.5" fill="white" opacity=".5"/><rect x="1" y="8.5" width="5.5" height="5.5" rx="1.5" fill="white" opacity=".5"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5" fill="white"/></svg>
-      </span>
+      <span class="brand-mark"><img src="team-photos/logo.png" alt="TaskSphere logo"/></span>
       <span>TaskSphere</span>
     </a>
     <div class="foot-links">
