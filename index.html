@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="TaskSphere — Nền tảng quản lý dự án & công việc theo thời gian thực. Java 17, Spring Boot 3, Next.js 14, TypeScript, Redis, WebSocket."/>
+<meta property="og:title" content="TaskSphere — Project & Task Management Platform"/>
+<meta property="og:description" content="Nền tảng quản lý dự án realtime xây dựng với Spring Boot 3 + Next.js 14"/>
+<meta property="og:url" content="https://lenhien06.github.io/tasksphere"/>
+<title>TaskSphere — Project & Task Management Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;--bg2:#eceae3;--bg3:#e4e1d8;
+  --white:#ffffff;
+  --ink:#141210;--ink2:#3b3832;--ink3:#5a5650;
+  --muted:#8a8780;
+  --border:#e2dfd7;--border2:#cbc8c0;
+  --accent:#1d4ed8;--acc-bg:#eff4ff;--acc-soft:#bfdbfe;
+  --java:#ea7011;--java-bg:#fff7ed;--java-border:#fed7aa;
+  --ts:#2563eb;--ts-bg:#eff6ff;--ts-border:#bfdbfe;
+  --green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+  --red:#dc2626;--red-bg:#fef2f2;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;
+  --yellow:#d97706;--yellow-bg:#fffbeb;
+  --sans:'Plus Jakarta Sans',sans-serif;
+  --serif:'Instrument Serif',Georgia,serif;
+  --r:12px;--rl:18px;--rxl:24px;
+  --shadow-sm:0 1px 3px rgba(20,18,16,0.07),0 1px 2px rgba(20,18,16,0.05);
+  --shadow:0 4px 16px rgba(20,18,16,0.08),0 2px 6px rgba(20,18,16,0.05);
+  --shadow-lg:0 16px 48px rgba(20,18,16,0.1),0 4px 12px rgba(20,18,16,0.06);
+  --shadow-xl:0 24px 64px rgba(20,18,16,0.12),0 8px 20px rgba(20,18,16,0.07);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(#c8c5bc 1px,transparent 1px);background-size:26px 26px;opacity:0.4;pointer-events:none;z-index:0}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(245,244,240,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1120px;margin:0 auto;padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:var(--sans);font-size:17px;font-weight:800;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:9px}
+.logo-mark{width:28px;height:28px;border-radius:8px;background:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:15px;height:15px}
+.nav-right{display:flex;align-items:center;gap:1.5rem}
+.nav-links{display:flex;align-items:center;gap:1.5rem;list-style:none}
+.nav-links a{font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--ink)}
+.nav-gh{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:var(--ink);color:#fff;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;transition:opacity .15s}
+.nav-gh:hover{opacity:.82}
+.nav-gh svg{width:15px;height:15px}
+
+/* ── WRAP ── */
+.wrap{max-width:1120px;margin:0 auto;padding:0 2rem;position:relative;z-index:1}
+
+/* ── HERO ── */
+.hero{padding:140px 2rem 100px;max-width:1120px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--border);border-radius:100px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:1.5rem}
+.hero-eyebrow-dot{width:7px;height:7px;background:var(--accent);border-radius:50%}
+h1{font-family:var(--serif);font-size:clamp(38px,5vw,66px);font-weight:400;line-height:1.05;letter-spacing:-1.5px;color:var(--ink);margin-bottom:1.25rem}
+h1 em{font-style:italic;color:var(--accent)}
+.hero-desc{font-size:17px;color:var(--ink3);font-weight:400;max-width:460px;margin-bottom:2rem;line-height:1.78}
+.cta-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:2.5rem}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;border-radius:9px;font-size:13.5px;font-weight:700;text-decoration:none;font-family:var(--sans);transition:all .18s;cursor:pointer;border:none}
+.btn svg{width:15px;height:15px;flex-shrink:0}
+.btn-dark{background:var(--ink);color:#fff}
+.btn-dark:hover{background:#2d2a25;transform:translateY(-1px);box-shadow:0 8px 24px rgba(20,18,16,0.2)}
+.btn-outline{background:var(--white);color:var(--ink);border:1px solid var(--border2)}
+.btn-outline:hover{border-color:var(--ink);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-accent:hover{background:#1a44c2;transform:translateY(-1px)}
+.btn-white{background:#fff;color:var(--ink)}
+.btn-white:hover{background:#f0ece6;transform:translateY(-1px)}
+.btn-ghost-white{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.25)}
+.btn-ghost-white:hover{border-color:rgba(255,255,255,0.6);transform:translateY(-1px)}
+
+.hero-badges{display:flex;flex-wrap:wrap;gap:7px}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--ink2)}
+.badge-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* MOCK WINDOW */
+.mock-window{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;box-shadow:var(--shadow-xl)}
+.mock-bar{background:var(--bg2);padding:10px 14px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border)}
+.md{width:10px;height:10px;border-radius:50%}
+.md-r{background:#fc5753}.md-y{background:#fdbc40}.md-g{background:#33c748}
+.mock-url-bar{margin-left:10px;background:var(--white);border:1px solid var(--border);border-radius:5px;padding:3px 10px;font-size:11px;color:var(--muted);font-family:monospace;flex:1;max-width:220px;display:flex;align-items:center;gap:5px}
+.mock-url-lock{font-size:10px}
+.mock-body{padding:1.25rem}
+.mock-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.mock-proj-name{font-size:13px;font-weight:800;color:var(--ink)}
+.mock-proj-meta{font-size:11px;color:var(--muted);margin-top:1px}
+.mock-add-btn{background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;font-family:var(--sans);white-space:nowrap}
+.kanban{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.k-col-head{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.k-col-left{display:flex;align-items:center;gap:5px}
+.k-col-count{font-size:10px;background:var(--bg2);border-radius:4px;padding:1px 5px;color:var(--muted)}
+.kdot{width:6px;height:6px;border-radius:50%}
+.k-todo{background:#94a3b8}.k-doing{background:#f59e0b}.k-done{background:#22c55e}
+.k-card{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:9px;margin-bottom:7px;cursor:pointer;transition:box-shadow .15s}
+.k-card:hover{box-shadow:var(--shadow-sm)}
+.k-card-title{font-size:10.5px;font-weight:700;color:var(--ink2);margin-bottom:6px;line-height:1.4}
+.k-card-footer{display:flex;align-items:center;justify-content:space-between}
+.k-tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block}
+.t-api{background:#ede9fe;color:#6d28d9}
+.t-ui{background:#dbeafe;color:#1d4ed8}
+.t-db{background:#fef3c7;color:#92400e}
+.t-ws{background:#d1fae5;color:#065f46}
+.t-auth{background:#fce7f3;color:#9d174d}
+.k-avs{display:flex}
+.k-av{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--white);margin-right:-5px;font-size:7px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mock-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+.mock-ws-status{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--green);background:var(--green-bg);border:1px solid var(--green-border);border-radius:100px;padding:3px 9px}
+.ws-dot{width:5px;height:5px;background:var(--green);border-radius:50%;animation:blink 1.8s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.mock-sprint{font-size:10px;color:var(--muted);font-weight:500}
+
+/* ── DIVIDER ── */
+hr.div{border:none;border-top:1px solid var(--border);position:relative;z-index:1}
+
+/* ── STATS ── */
+.stats-section{padding:0;position:relative;z-index:1}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:var(--rl);overflow:hidden;border:1px solid var(--border);margin:56px 0}
+.stat-card{background:var(--white);padding:2rem 1.5rem;text-align:center;position:relative}
+.stat-num{font-family:var(--serif);font-size:44px;font-weight:400;color:var(--ink);line-height:1;margin-bottom:6px;letter-spacing:-2px}
+.stat-label{font-size:13px;color:var(--muted);font-weight:500;line-height:1.4}
+.stat-sub{font-size:11px;color:var(--border2);font-weight:500;margin-top:3px}
+
+/* ── SECTION ── */
+.section{padding:88px 0;position:relative;z-index:1}
+.section-alt{background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:2px;font-weight:700;color:var(--accent);margin-bottom:10px}
+h2{font-family:var(--serif);font-size:clamp(28px,3.5vw,46px);font-weight:400;letter-spacing:-1px;line-height:1.1;color:var(--ink);margin-bottom:1rem}
+.sec-desc{color:var(--ink3);font-size:16px;font-weight:400;max-width:500px;margin-bottom:3rem;line-height:1.75}
+.sec-header-row{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;margin-bottom:2.5rem}
+.sec-header-row .sec-desc{margin-bottom:0}
+
+/* ── ABOUT / TEAM ── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.about-story p{font-size:16px;color:var(--ink3);line-height:1.8;margin-bottom:1rem}
+.about-story p:last-child{margin-bottom:0}
+.highlight-text{background:linear-gradient(135deg,var(--accent),#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
+
+.team-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);padding:1.75rem;margin-bottom:12px;display:flex;align-items:center;gap:1.25rem;transition:all .2s}
+.team-card:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+.team-avatar{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0;font-family:var(--sans)}
+.team-info{flex:1}
+.team-name{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:3px}
+.team-role{font-size:13px;color:var(--muted);font-weight:500;margin-bottom:6px}
+.team-badges{display:flex;gap:5px;flex-wrap:wrap}
+.team-badge{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:5px}
+.team-gh{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--accent);text-decoration:none;margin-top:6px}
+.team-gh svg{width:12px;height:12px}
+.team-gh:hover{text-decoration:underline}
+
+/* ── REPO CARDS ── */
+.repo-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.repo-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);padding:2rem;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:1rem;transition:all .2s;position:relative;overflow:hidden}
+.repo-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .2s}
+.rc-java::after{background:linear-gradient(90deg,#ea7011,#fbbf24)}
+.rc-ts::after{background:linear-gradient(90deg,#2563eb,#60a5fa)}
+.repo-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);border-color:var(--border2)}
+.repo-card:hover::after{opacity:1}
+.rc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.rc-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.ic-java{background:var(--java-bg);border:1px solid var(--java-border)}
+.ic-ts{background:var(--ts-bg);border:1px solid var(--ts-border);font-size:13px;font-weight:800;color:#2563eb;font-family:monospace;letter-spacing:-1px}
+.rc-pub{font-size:11px;font-weight:700;color:var(--green);background:var(--green-bg);padding:3px 10px;border-radius:100px;border:1px solid var(--green-border);white-space:nowrap}
+.rc-name{font-size:18px;font-weight:800;color:var(--ink);margin-bottom:5px}
+.rc-desc{font-size:14px;color:var(--ink3);line-height:1.65}
+.rc-tags{display:flex;flex-wrap:wrap;gap:6px}
+.rc-tag{font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid var(--border);color:var(--ink2);background:var(--bg)}
+.rc-stats{display:flex;gap:1rem;padding-top:.75rem;border-top:1px solid var(--border)}
+.rc-stat{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);font-weight:600}
+.rc-stat svg{width:13px;height:13px}
+.rc-link{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--accent);margin-top:auto}
+.rc-link svg{width:13px;height:13px}
+
+/* ── FEATURES ── */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);padding:1.75rem;transition:all .2s;position:relative;overflow:hidden}
+.feat-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),#7c3aed);opacity:0;transition:opacity .2s}
+.feat-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.feat-card:hover::before{opacity:1}
+.feat-n{font-family:var(--serif);font-size:32px;color:var(--bg3);line-height:1;margin-bottom:12px}
+.feat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px;border:1px solid var(--border)}
+.feat-t{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:8px}
+.feat-d{font-size:13.5px;color:var(--ink3);line-height:1.65}
+.feat-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.feat-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px}
+
+/* ── ARCH ── */
+.arch-wrap{background:#0d1117;border-radius:var(--rl);padding:2.5rem;margin-top:2rem;font-family:'Courier New',monospace;font-size:13px;line-height:2.1;overflow-x:auto;border:1px solid #21262d}
+.arch-wrap .w{color:#e6edf3}.arch-wrap .b{color:#79c0ff}.arch-wrap .o{color:#ffa657}.arch-wrap .g{color:#56d364}.arch-wrap .t{color:#39d353}.arch-wrap .y{color:#e3b341}.arch-wrap .m{color:#bc8cff}.arch-wrap .dim{color:#484f58}
+
+/* ── TECH STACK ── */
+.tech-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tech-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden}
+.tech-head{padding:1.1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.th-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.th-title{font-size:15px;font-weight:800;color:var(--ink)}
+.th-sub{font-size:12px;color:var(--muted);font-weight:500}
+.tech-row{display:flex;align-items:center;padding:.7rem 1.5rem;gap:12px;border-bottom:1px solid var(--border);transition:background .15s}
+.tech-row:last-child{border-bottom:none}
+.tech-row:hover{background:var(--bg)}
+.tr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.tr-name{font-size:13.5px;font-weight:700;color:var(--ink2);flex:1}
+.tr-version{font-size:11px;color:var(--muted);font-weight:600;background:var(--bg2);padding:2px 7px;border-radius:4px;margin-right:4px}
+.tr-role{font-size:12px;color:var(--muted)}
+
+/* ── FLOW / HOW IT WORKS ── */
+.flow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+.flow-grid::before{content:'';position:absolute;top:28px;left:calc(12.5% + 14px);right:calc(12.5% + 14px);height:1px;background:linear-gradient(90deg,var(--border2),var(--accent),var(--border2));z-index:0}
+.flow-step{text-align:center;padding:0 1rem;position:relative;z-index:1}
+.flow-num{width:56px;height:56px;border-radius:50%;background:var(--white);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-family:var(--serif);font-size:22px;color:var(--ink);transition:all .2s}
+.flow-step:hover .flow-num{border-color:var(--accent);background:var(--acc-bg);color:var(--accent)}
+.flow-title{font-size:14px;font-weight:800;color:var(--ink);margin-bottom:6px}
+.flow-desc{font-size:12.5px;color:var(--muted);line-height:1.55}
+
+/* ── API ENDPOINTS ── */
+.api-list{display:flex;flex-direction:column;gap:8px}
+.api-item{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;font-family:monospace;font-size:13px;transition:all .15s}
+.api-item:hover{border-color:var(--border2);box-shadow:var(--shadow-sm)}
+.api-method{font-size:11px;font-weight:800;padding:3px 8px;border-radius:5px;min-width:48px;text-align:center;flex-shrink:0}
+.m-get{background:#dbeafe;color:#1d4ed8}
+.m-post{background:#d1fae5;color:#065f46}
+.m-put{background:#fef3c7;color:#92400e}
+.m-del{background:#fee2e2;color:#991b1b}
+.api-path{color:var(--ink2);flex:1}
+.api-path span{color:var(--muted)}
+.api-desc{font-size:12px;color:var(--muted);font-family:var(--sans);font-weight:500}
+
+/* ── CTA BANNER ── */
+.cta-banner{background:var(--ink);border-radius:var(--rl);padding:4rem;margin:0 0 88px;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;position:relative;overflow:hidden}
+.cta-banner::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,0.04) 1px,transparent 1px);background-size:22px 22px}
+.cta-banner::after{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(29,78,216,0.25) 0%,transparent 70%);pointer-events:none}
+.cta-text{position:relative;z-index:1}
+.cta-text h3{font-family:var(--serif);font-size:clamp(26px,3vw,36px);font-weight:400;color:#fff;letter-spacing:-1px;margin-bottom:10px}
+.cta-text p{font-size:15px;color:#9ca3af;line-height:1.6;max-width:400px}
+.cta-btns{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:2.5rem 0;position:relative;z-index:1}
+.foot-inner{max-width:1120px;margin:0 auto;padding:0 2rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:2rem}
+.foot-logo{font-size:15px;font-weight:800;color:var(--ink2);text-decoration:none;display:flex;align-items:center;gap:8px}
+.foot-mark{width:24px;height:24px;border-radius:7px;background:var(--ink);display:flex;align-items:center;justify-content:center}
+.foot-mark svg{width:13px;height:13px}
+.foot-links{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap}
+.foot-links a{font-size:13px;color:var(--muted);text-decoration:none;font-weight:500;transition:color .15s}
+.foot-links a:hover{color:var(--ink)}
+.foot-right{text-align:right}
+.foot-copy{font-size:12.5px;color:var(--muted);display:block}
+.foot-built{font-size:12px;color:var(--border2);margin-top:2px}
+
+/* ── FADE ANIMATION ── */
+.fade{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.fade.in{opacity:1;transform:translateY(0)}
+.fade-d1{transition-delay:.08s}
+.fade-d2{transition-delay:.16s}
+.fade-d3{transition-delay:.24s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding-top:100px}
+  .hero-visual{display:none}
+  .repo-grid,.feat-grid,.tech-grid,.about-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .flow-grid{grid-template-columns:repeat(2,1fr);gap:2rem}
+  .flow-grid::before{display:none}
+  .cta-banner{flex-direction:column}
+  .foot-inner{grid-template-columns:1fr;text-align:center}
+  .foot-right{text-align:center}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 15 15" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1.5" fill="white"/><rect x="8.5" y="1" width="5.5" height="5.5" rx="1.5" fill="white" opacity=".5"/><rect x="1" y="8.5" width="5.5" height="5.5" rx="1.5" fill="white" opacity=".5"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5" fill="white"/></svg>
+      </div>
+      TaskSphere
+    </a>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#about">Giới thiệu</a></li>
+        <li><a href="#repos">Repositories</a></li>
+        <li><a href="#features">Tính năng</a></li>
+        <li><a href="#architecture">Kiến trúc</a></li>
+        <li><a href="#api">API</a></li>
+      </ul>
+      <a href="https://github.com/lenhien06" target="_blank" class="nav-gh">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-dot"></div>
+      Nhóm 2–3 người · Dự án tốt nghiệp / Portfolio
+    </div>
+    <h1>Quản lý dự án<br/><em>thông minh</em><br/>& thời gian thực</h1>
+    <p class="hero-desc">TaskSphere là nền tảng quản lý dự án & công việc theo nhóm, hỗ trợ cộng tác realtime qua WebSocket. Xây dựng với kiến trúc client–server tách biệt hoàn toàn trên Spring Boot 3 và Next.js 14.</p>
+    <div class="cta-row">
+      <a href="https://github.com/lenhien06/tasksphere-backend" target="_blank" class="btn btn-dark">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        Xem Backend Repo
+      </a>
+      <a href="https://github.com/lenhien06/tasksphere-frontend" target="_blank" class="btn btn-outline">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        Xem Frontend Repo
+      </a>
+    </div>
+    <div class="hero-badges">
+      <span class="badge"><span class="badge-dot" style="background:#ea7011"></span>Java 17</span>
+      <span class="badge"><span class="badge-dot" style="background:#6db33f"></span>Spring Boot 3</span>
+      <span class="badge"><span class="badge-dot" style="background:#4479a1"></span>MySQL</span>
+      <span class="badge"><span class="badge-dot" style="background:#dc382d"></span>Redis</span>
+      <span class="badge"><span class="badge-dot" style="background:#111"></span>Next.js 14</span>
+      <span class="badge"><span class="badge-dot" style="background:#3178c6"></span>TypeScript</span>
+      <span class="badge"><span class="badge-dot" style="background:#38bdf8"></span>Tailwind CSS</span>
+    </div>
+  </div>
+
+  <!-- MOCK UI -->
+  <div class="hero-visual">
+    <div class="mock-window">
+      <div class="mock-bar">
+        <div class="md md-r"></div><div class="md md-y"></div><div class="md md-g"></div>
+        <div class="mock-url-bar"><span class="mock-url-lock">🔒</span> github.com/lenhien06</div>
+      </div>
+      <div class="mock-body">
+        <div class="mock-topbar">
+          <div>
+            <div class="mock-proj-name">🗂 TaskSphere · Sprint #4</div>
+            <div class="mock-proj-meta">8 tasks · 3 thành viên</div>
+          </div>
+          <div class="mock-add-btn">+ Add Task</div>
+        </div>
+        <div class="kanban">
+          <!-- TODO -->
+          <div>
+            <div class="k-col-head">
+              <div class="k-col-left"><span class="kdot k-todo"></span>To Do</div>
+              <span class="k-col-count">3</span>
+            </div>
+            <div class="k-card">
+              <div class="k-card-title">JWT refresh token endpoint</div>
+              <div class="k-card-footer"><span class="k-tag t-auth">Auth</span><div class="k-avs"><div class="k-av" style="background:#7c3aed">B</div></div></div>
+            </div>
+            <div class="k-card">
+              <div class="k-card-title">Redis session cache</div>
+              <div class="k-card-footer"><span class="k-tag t-db">Cache</span><div class="k-avs"><div class="k-av" style="background:#0284c7">N</div></div></div>
+            </div>
+            <div class="k-card">
+              <div class="k-card-title">Project permission roles</div>
+              <div class="k-card-footer"><span class="k-tag t-api">API</span><div class="k-avs"><div class="k-av" style="background:#be185d">H</div></div></div>
+            </div>
+          </div>
+          <!-- IN PROGRESS -->
+          <div>
+            <div class="k-col-head">
+              <div class="k-col-left"><span class="kdot k-doing"></span>In Progress</div>
+              <span class="k-col-count">2</span>
+            </div>
+            <div class="k-card">
+              <div class="k-card-title">Kanban board drag & drop</div>
+              <div class="k-card-footer"><span class="k-tag t-ui">UI</span><div class="k-avs"><div class="k-av" style="background:#059669">B</div><div class="k-av" style="background:#be185d">H</div></div></div>
+            </div>
+            <div class="k-card">
+              <div class="k-card-title">WebSocket realtime sync</div>
+              <div class="k-card-footer"><span class="k-tag t-ws">WS</span><div class="k-avs"><div class="k-av" style="background:#7c3aed">N</div></div></div>
+            </div>
+          </div>
+          <!-- DONE -->
+          <div>
+            <div class="k-col-head">
+              <div class="k-col-left"><span class="kdot k-done"></span>Done</div>
+              <span class="k-col-count">4</span>
+            </div>
+            <div class="k-card">
+              <div class="k-card-title">User auth & login flow</div>
+              <div class="k-card-footer"><span class="k-tag t-auth">Auth</span><div class="k-avs"><div class="k-av" style="background:#0284c7">N</div></div></div>
+            </div>
+            <div class="k-card">
+              <div class="k-card-title">Responsive Tailwind layout</div>
+              <div class="k-card-footer"><span class="k-tag t-ui">UI</span><div class="k-avs"><div class="k-av" style="background:#059669">B</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="mock-footer">
+          <div class="mock-ws-status"><div class="ws-dot"></div>3 người đang online</div>
+          <div class="mock-sprint">Deadline: 30/06/2025</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="wrap stats-section">
+  <div class="stats-grid fade">
+    <div class="stat-card">
+      <div class="stat-num">2</div>
+      <div class="stat-label">Public Repositories</div>
+      <div class="stat-sub">Backend + Frontend</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">8+</div>
+      <div class="stat-label">Công nghệ</div>
+      <div class="stat-sub">Production-grade stack</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">REST</div>
+      <div class="stat-label">+ WebSocket</div>
+      <div class="stat-sub">API & Realtime</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">MIT</div>
+      <div class="stat-label">License</div>
+      <div class="stat-sub">Open Source</div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="section section-alt" id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="fade">
+        <p class="eyebrow">Về dự án</p>
+        <h2>TaskSphere ra đời<br/>như thế nào?</h2>
+        <div class="about-story">
+          <p>TaskSphere được phát triển như một dự án <span class="highlight-text">thực chiến</span> nhằm giải quyết bài toán quản lý công việc nhóm trong môi trường học tập và làm việc — nơi mà các công cụ hiện có hoặc quá phức tạp, hoặc thiếu tính năng cộng tác thời gian thực.</p>
+          <p>Chúng tôi xây dựng hệ thống với kiến trúc <strong>client–server tách biệt hoàn toàn</strong>, đặt trọng tâm vào khả năng mở rộng, hiệu suất và trải nghiệm người dùng mượt mà — kể cả khi nhiều thành viên cùng thao tác đồng thời.</p>
+          <p>Dự án áp dụng đầy đủ các kỹ thuật hiện đại: JWT authentication, Redis caching, WebSocket realtime, TanStack Query cho server state, và Tailwind CSS utility-first cho giao diện responsive.</p>
+        </div>
+      </div>
+      <div class="fade fade-d1">
+        <p class="eyebrow">Nhóm phát triển</p>
+        <h2 style="margin-bottom:1.5rem">Đội ngũ</h2>
+
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#1d4ed8,#7c3aed)">B</div>
+          <div class="team-info">
+            <div class="team-name">Lê Thị Bảo Nhiên</div>
+            <div class="team-role">🏆 Project Leader · Backend Developer</div>
+            <div class="team-badges">
+              <span class="team-badge" style="background:var(--java-bg);color:var(--java)">Java / Spring Boot</span>
+              <span class="team-badge" style="background:var(--red-bg);color:var(--red)">Redis</span>
+              <span class="team-badge" style="background:var(--purple-bg);color:var(--purple)">WebSocket</span>
+            </div>
+            <a href="https://github.com/lenhien06" target="_blank" class="team-gh">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              @lenhien06
+            </a>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#0284c7,#0ea5e9)">M2</div>
+          <div class="team-info">
+            <div class="team-name">Thành viên 2</div>
+            <div class="team-role">Backend Developer</div>
+            <div class="team-badges">
+              <span class="team-badge" style="background:var(--java-bg);color:var(--java)">Spring Boot</span>
+              <span class="team-badge" style="background:#f0fdf4;color:#16a34a">MySQL</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#059669,#10b981)">M3</div>
+          <div class="team-info">
+            <div class="team-name">Thành viên 3</div>
+            <div class="team-role">Frontend Developer</div>
+            <div class="team-badges">
+              <span class="team-badge" style="background:var(--ts-bg);color:var(--ts)">Next.js · TypeScript</span>
+              <span class="team-badge" style="background:#f0f9ff;color:#0284c7">Tailwind CSS</span>
+            </div>
+          </div>
+        </div>
+
+        <p style="font-size:12px;color:var(--muted);margin-top:10px">* Cập nhật tên thành viên vào file index.html nếu cần</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REPOS -->
+<section class="section" id="repos">
+  <div class="wrap">
+    <div class="sec-header-row">
+      <div class="fade">
+        <p class="eyebrow">Source Code</p>
+        <h2>Hai repository<br/>độc lập</h2>
+        <p class="sec-desc">Backend và Frontend tách biệt hoàn toàn — mỗi repo có thể deploy, test và scale riêng lẻ.</p>
+      </div>
+    </div>
+    <div class="repo-grid fade">
+      <a class="repo-card rc-java" href="https://github.com/lenhien06/tasksphere-backend" target="_blank">
+        <div class="rc-top">
+          <div class="rc-icon ic-java">☕</div>
+          <span class="rc-pub">Public</span>
+        </div>
+        <div>
+          <div class="rc-name">tasksphere-backend</div>
+          <p class="rc-desc">RESTful API server xử lý toàn bộ business logic của hệ thống. Bao gồm xác thực người dùng bằng JWT, quản lý project & task, phân quyền theo role, caching với Redis và giao tiếp realtime hai chiều qua WebSocket.</p>
+        </div>
+        <div class="rc-tags">
+          <span class="rc-tag">Java 17</span>
+          <span class="rc-tag">Spring Boot 3</span>
+          <span class="rc-tag">Spring Security</span>
+          <span class="rc-tag">MySQL</span>
+          <span class="rc-tag">Redis</span>
+          <span class="rc-tag">WebSocket</span>
+          <span class="rc-tag">JWT</span>
+          <span class="rc-tag">JPA / Hibernate</span>
+        </div>
+        <div class="rc-stats">
+          <span class="rc-stat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Java
+          </span>
+          <span class="rc-stat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            REST + WebSocket API
+          </span>
+        </div>
+        <span class="rc-link">
+          github.com/lenhien06/tasksphere-backend
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </span>
+      </a>
+
+      <a class="repo-card rc-ts" href="https://github.com/lenhien06/tasksphere-frontend" target="_blank">
+        <div class="rc-top">
+          <div class="rc-icon ic-ts">TS</div>
+          <span class="rc-pub">Public</span>
+        </div>
+        <div>
+          <div class="rc-name">tasksphere-frontend</div>
+          <p class="rc-desc">Giao diện người dùng hiện đại xây dựng bằng Next.js 14 với App Router. Server state được quản lý tối ưu bởi TanStack Query, kết nối realtime với backend qua WebSocket, và styling nhất quán bằng Tailwind CSS utility-first.</p>
+        </div>
+        <div class="rc-tags">
+          <span class="rc-tag">Next.js 14</span>
+          <span class="rc-tag">TypeScript</span>
+          <span class="rc-tag">TanStack Query</span>
+          <span class="rc-tag">Tailwind CSS</span>
+          <span class="rc-tag">WebSocket Client</span>
+          <span class="rc-tag">App Router</span>
+        </div>
+        <div class="rc-stats">
+          <span class="rc-stat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            TypeScript
+          </span>
+          <span class="rc-stat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            SSR + CSR
+          </span>
+        </div>
+        <span class="rc-link">
+          github.com/lenhien06/tasksphere-frontend
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section section-alt" id="features">
+  <div class="wrap">
+    <div class="fade">
+      <p class="eyebrow">Tính năng</p>
+      <h2>Đầy đủ tính năng<br/>cho nhóm làm việc</h2>
+      <p class="sec-desc">Từ quản lý task cơ bản đến cộng tác realtime nâng cao — TaskSphere cung cấp mọi công cụ cần thiết.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card fade">
+        <div class="feat-icon" style="background:var(--acc-bg)">📋</div>
+        <div class="feat-t">Quản lý Task & Project</div>
+        <p class="feat-d">Tạo và quản lý nhiều dự án song song. Trong mỗi project có thể tạo task, gán thành viên phụ trách, đặt mức độ ưu tiên, deadline và theo dõi trạng thái theo luồng Kanban linh hoạt.</p>
+        <div class="feat-tags">
+          <span class="feat-tag" style="background:var(--acc-bg);color:var(--accent)">CRUD Project</span>
+          <span class="feat-tag" style="background:var(--acc-bg);color:var(--accent)">Kanban Board</span>
+          <span class="feat-tag" style="background:var(--acc-bg);color:var(--accent)">Priority</span>
+        </div>
+      </div>
+      <div class="feat-card fade fade-d1">
+        <div class="feat-icon" style="background:var(--green-bg)">⚡</div>
+        <div class="feat-t">Realtime Collaboration</div>
+        <p class="feat-d">Mọi thao tác như tạo task, thay đổi trạng thái, hay comment đều được đồng bộ tức thì đến toàn bộ thành viên đang online qua WebSocket — không cần reload trang.</p>
+        <div class="feat-tags">
+          <span class="feat-tag" style="background:var(--green-bg);color:var(--green)">WebSocket</span>
+          <span class="feat-tag" style="background:var(--green-bg);color:var(--green)">Live Sync</span>
+          <span class="feat-tag" style="background:var(--green-bg);color:var(--green)">Online Status</span>
+        </div>
+      </div>
+      <div class="feat-card fade fade-d2">
+        <div class="feat-icon" style="background:var(--purple-bg)">🔐</div>
+        <div class="feat-t">Xác thực & Phân quyền</div>
+        <p class="feat-d">Hệ thống xác thực JWT với access token và refresh token. Phân quyền theo vai trò: Admin có toàn quyền quản lý, Member chỉ thao tác trong phạm vi được giao.</p>
+        <div class="feat-tags">
+          <span class="feat-tag" style="background:var(--purple-bg);color:var(--purple)">JWT Auth</span>
+          <span class="feat-tag" style="background:var(--purple-bg);color:var(--purple)">Role-based</span>
+          <span class="feat-tag" style="background:var(--purple-bg);color:var(--purple)">Refresh Token</span>
+        </div>
+      </div>
+      <div class="feat-card fade">
+        <div class="feat-icon" style="background:var(--red-bg)">🚀</div>
+        <div class="feat-t">Redis Caching</div>
+        <p class="feat-d">Session và dữ liệu truy cập thường xuyên được cache trên Redis, giúp giảm đáng kể số lần query database, tăng tốc độ phản hồi API và cải thiện trải nghiệm người dùng.</p>
+        <div class="feat-tags">
+          <span class="feat-tag" style="background:var(--red-bg);color:var(--red)">In-memory Cache</span>
+          <span class="feat-tag" style="background:var(--red-bg);color:var(--red)">Session Store</span>
+        </div>
+      </div>
+      <div class="feat-card fade fade-d1">
+        <div class="feat-icon" style="background:var(--ts-bg)">🔄</div>
+        <div class="feat-t">TanStack Query</div>
+        <p class="feat-d">Server state được quản lý thông minh bởi TanStack Query — tự động cache response, refetch khi stale, retry khi lỗi mạng và đồng bộ dữ liệu giữa nhiều component.</p>
+        <div class="feat-tags">
+          <span class="feat-tag" style="background:var(--ts-bg);color:var(--ts)">Smart Cache</span>
+          <span class="feat-tag" style="background:var(--ts-bg);color:var(--ts)">Auto Refetch</span>
+          <span class="feat-tag" style="background:var(--ts-bg);color:var(--ts)">Optimistic UI</span>
+        </div>
+      </div>
+      <div class="feat-card fade fade-d2">
+        <div class="feat-icon" style="background:var(--yellow-bg)">📱</div>
+        <div class="feat-t">Responsive UI</div>
+        <p class="feat-d">Toàn bộ giao diện được xây dựng bằng Tailwind CSS với thiết kế mobile-first, đảm bảo trải nghiệm nhất quán trên mọi kích thước màn hình từ điện thoại đến desktop.</p>
+        <div class="feat-tags">
+          <span class="feat-tag" style="background:var(--yellow-bg);color:var(--yellow)">Mobile-first</span>
+          <span class="feat-tag" style="background:var(--yellow-bg);color:var(--yellow)">Tailwind CSS</span>
+          <span class="feat-tag" style="background:var(--yellow-bg);color:var(--yellow)">Dark Mode</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="fade" style="text-align:center;margin-bottom:3.5rem">
+      <p class="eyebrow">Luồng hoạt động</p>
+      <h2>Từ request đến<br/>response realtime</h2>
+    </div>
+    <div class="flow-grid fade">
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-title">User gửi request</div>
+        <p class="flow-desc">Frontend gọi REST API với JWT token trong header để xác thực danh tính</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-title">Spring Boot xử lý</div>
+        <p class="flow-desc">Backend validate token, kiểm tra quyền, xử lý logic nghiệp vụ và tương tác với MySQL</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div class="flow-title">Redis cache</div>
+        <p class="flow-desc">Dữ liệu thường dùng được cache Redis, giảm tải DB và tăng tốc response</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div class="flow-title">Broadcast WebSocket</div>
+        <p class="flow-desc">Thay đổi được push realtime đến tất cả client đang kết nối trong cùng project</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="section section-alt" id="architecture">
+  <div class="wrap">
+    <div class="fade">
+      <p class="eyebrow">Kiến trúc</p>
+      <h2>System Architecture</h2>
+      <p class="sec-desc">Kiến trúc client–server tách biệt hoàn toàn. Hai luồng giao tiếp chính: REST API cho các thao tác CRUD và WebSocket cho đồng bộ realtime.</p>
+    </div>
+    <div class="arch-wrap fade">
+<span class="dim">┌──────────────────────────────────────────────────────────────────────┐</span>
+<span class="dim">│                          TASKSPHERE SYSTEM                          │</span>
+<span class="dim">│                    github.com/lenhien06                             │</span>
+<span class="dim">└──────────────────────────────────────────────────────────────────────┘</span>
+
+  <span class="b">┌───────────────────────────┐</span>          <span class="o">┌──────────────────────────────────┐</span>
+  <span class="b">│  FRONTEND                 │</span>          <span class="o">│  BACKEND                         │</span>
+  <span class="b">│  tasksphere-frontend      │</span>          <span class="o">│  tasksphere-backend              │</span>
+  <span class="b">│                           │</span>          <span class="o">│                                  │</span>
+  <span class="b">│  ▸ Next.js 14 App Router  │◄─REST──►│  ▸ Spring Boot 3 (Java 17)       │</span>
+  <span class="b">│  ▸ TypeScript             │          <span class="o">│  ▸ Spring Security + JWT         │</span>
+  <span class="b">│  ▸ TanStack Query         │◄─ WS ──►│  ▸ WebSocket Server (STOMP)      │</span>
+  <span class="b">│  ▸ Tailwind CSS           │</span>          <span class="o">│  ▸ JPA / Hibernate ORM           │</span>
+  <span class="b">│  ▸ WebSocket Client       │</span>          <span class="o">│                                  │</span>
+  <span class="b">└───────────────────────────┘</span>          <span class="o">│  DATA LAYER                      │</span>
+                                          <span class="o">│  ┌─────────────┐ ┌────────────┐  │</span>
+                                          <span class="o">│  │  </span><span class="g">MySQL 8</span><span class="o">     │ │ </span><span class="y">Redis 7</span><span class="o">   │  │</span>
+                                          <span class="o">│  │  </span><span class="g">Primary DB </span><span class="o"> │ │ </span><span class="y">Cache +  </span><span class="o"> │  │</span>
+                                          <span class="o">│  │             │ │ </span><span class="y">Session  </span><span class="o"> │  │</span>
+                                          <span class="o">│  └─────────────┘ └────────────┘  │</span>
+                                          <span class="o">└──────────────────────────────────┘</span>
+
+  <span class="dim">── REST API ──►  HTTP/HTTPS · JSON · JWT Bearer Token</span>
+  <span class="dim">◄── WebSocket ─  ws:// · STOMP Protocol · Topic Subscription</span>
+    </div>
+  </div>
+</section>
+
+<!-- API ENDPOINTS -->
+<section class="section" id="api">
+  <div class="wrap">
+    <div class="sec-header-row fade">
+      <div>
+        <p class="eyebrow">API Reference</p>
+        <h2>REST API chính</h2>
+        <p class="sec-desc">Các endpoint chính của hệ thống. Xem đầy đủ tại repo backend.</p>
+      </div>
+      <a href="https://github.com/lenhien06/tasksphere-backend" target="_blank" class="btn btn-outline" style="white-space:nowrap;flex-shrink:0">Xem full API →</a>
+    </div>
+    <div class="api-list fade">
+      <div class="api-item"><span class="api-method m-post">POST</span><span class="api-path">/api/auth/login</span><span class="api-desc">Đăng nhập · trả về JWT access + refresh token</span></div>
+      <div class="api-item"><span class="api-method m-post">POST</span><span class="api-path">/api/auth/register</span><span class="api-desc">Đăng ký tài khoản mới</span></div>
+      <div class="api-item"><span class="api-method m-post">POST</span><span class="api-path">/api/auth/refresh</span><span class="api-desc">Làm mới access token bằng refresh token</span></div>
+      <div class="api-item"><span class="api-method m-get">GET</span><span class="api-path">/api/projects</span><span class="api-desc">Lấy danh sách project của user hiện tại</span></div>
+      <div class="api-item"><span class="api-method m-post">POST</span><span class="api-path">/api/projects</span><span class="api-desc">Tạo project mới</span></div>
+      <div class="api-item"><span class="api-method m-get">GET</span><span class="api-path">/api/projects/<span style="color:#7c3aed">{id}</span>/tasks</span><span class="api-desc">Lấy tất cả task của một project</span></div>
+      <div class="api-item"><span class="api-method m-post">POST</span><span class="api-path">/api/projects/<span style="color:#7c3aed">{id}</span>/tasks</span><span class="api-desc">Tạo task mới trong project</span></div>
+      <div class="api-item"><span class="api-method m-put">PUT</span><span class="api-path">/api/tasks/<span style="color:#7c3aed">{id}</span>/status</span><span class="api-desc">Cập nhật trạng thái task · trigger WebSocket broadcast</span></div>
+      <div class="api-item"><span class="api-method m-put">PUT</span><span class="api-path">/api/tasks/<span style="color:#7c3aed">{id}</span>/assign</span><span class="api-desc">Gán thành viên phụ trách task</span></div>
+      <div class="api-item"><span class="api-method m-del">DEL</span><span class="api-path">/api/tasks/<span style="color:#7c3aed">{id}</span></span><span class="api-desc">Xóa task (chỉ Admin)</span></div>
+      <div class="api-item"><span class="api-method m-get">GET</span><span class="api-path"><span style="color:#22c55e">WS</span> /ws/project/<span style="color:#7c3aed">{id}</span></span><span class="api-desc">WebSocket endpoint · subscribe nhận event realtime</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="section section-alt" id="stack">
+  <div class="wrap">
+    <div class="fade">
+      <p class="eyebrow">Tech Stack</p>
+      <h2>Công nghệ sử dụng</h2>
+      <p class="sec-desc">Mỗi công nghệ được chọn lọc cho đúng vai trò — không over-engineering, không thiếu sót.</p>
+    </div>
+    <div class="tech-grid fade">
+      <div class="tech-card">
+        <div class="tech-head">
+          <div class="th-icon ic-java">☕</div>
+          <div><div class="th-title">Backend</div><div class="th-sub">tasksphere-backend</div></div>
+        </div>
+        <div class="tech-row"><span class="tr-dot" style="background:#ea7011"></span><span class="tr-name">Java 17</span><span class="tr-version">LTS</span><span class="tr-role">Ngôn ngữ lập trình</span></div>
+        <div class="tech-row"><span class="tr-dot" style="background:#6db33f"></span><span class="tr-name">Spring Boot 3</span><span class="tr-version">3.x</span><span class="tr-role">Application framework</span></div>
+        <div class="tech-row"><span class="tr-dot" style="background:#6db33f"></span><span class="tr-name">Spring Security</span><span class="tr-version"></span><span class="tr-role">Auth & Authorization</span></div>
+        <div class="tech-row"><span class="tr-dot" style="background:#6d28d9"></span><span class="tr-name">JWT</span><span class="tr-version"></span><span class="tr-role">Stateless authentication</span></div>
+        <div class="tech-row"><span class="tr-dot" style="background:#4479a1"></span><span class="tr-name">MySQL 8</span><span class="tr-version">8.0</span><span class="tr-role">Relational database</span></div>
+        <div class="tech-row"><span class="tr-dot" style="background:#6db33f"></span><span class="tr-name">JPA / Hibernate</span><span class="tr-version"></span><span class="tr-role">ORM layer</span></div>
+        <div class="tech-row"><span class="tr-dot" style="background:#dc382d"></span><span class="tr-name">Redis 7</span><span class="tr-version">7.x</span><span class="tr-role">Cache & session store</span></div>
+        <div class="tech-row"><span class="tr-dot" style="background:#22c55e"></span><span class="tr-name">WebSocket (STOMP)</span><span class="tr-version"></span><span class="tr-role">Realtime communication</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-head">
+          <div class="th-icon ic-ts">TS</div>
+          <div><div class="th-title">Frontend</div><div class="th-sub">tasksphere-frontend</div></div>
+        </div>
+        <div class="tech-row"><span class="tr-dot" style="background:#111"></span><span class="tr-name">Next.js 14</span><span class="tr-version">App Router</span><span class="tr-role">React framework + SSR</span></div>
+        <div class="tech-row"><span class="tr-dot" style="background:#3178c6"></span><span class="tr-name">TypeScript</span><span class="tr-version">5.x</span><span class="tr-role">Type-safe JavaScript</span></div>
+        <div class="tech-row"><span class="tr-dot" style="background:#ef4444"></span><span class="tr-name">TanStack Query</span><span class="tr-version">v5</span><span class="tr-role">Server state management</span></div>
+        <div class="tech-row"><span class="tr-dot" style="background:#38bdf8"></span><span class="tr-name">Tailwind CSS</span><span class="tr-version">v3</span><span class="tr-role">Utility-first styling</span></div>
+        <div class="tech-row"><span class="tr-dot" style="background:#22c55e"></span><span class="tr-name">WebSocket Client</span><span class="tr-version"></span><span class="tr-role">Realtime event listener</span></div>
+        <div class="tech-row"><span class="tr-dot" style="background:#f59e0b"></span><span class="tr-name">Axios</span><span class="tr-version"></span><span class="tr-role">HTTP client + interceptors</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="wrap">
+  <div class="cta-banner fade">
+    <div class="cta-text">
+      <h3>Khám phá source code</h3>
+      <p>Toàn bộ source code được public trên GitHub. Clone về, chạy thử và tìm hiểu kiến trúc hệ thống. Star nếu thấy hữu ích nhé!</p>
+    </div>
+    <div class="cta-btns">
+      <a href="https://github.com/lenhien06/tasksphere-backend" target="_blank" class="btn btn-white">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        Backend Repo
+      </a>
+      <a href="https://github.com/lenhien06/tasksphere-frontend" target="_blank" class="btn btn-white">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        Frontend Repo
+      </a>
+      <a href="https://github.com/lenhien06" target="_blank" class="btn btn-ghost-white">
+        Xem GitHub Profile →
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-inner">
+    <a href="#" class="foot-logo">
+      <div class="foot-mark">
+        <svg viewBox="0 0 13 13" fill="none"><rect x="1" y="1" width="4.5" height="4.5" rx="1.2" fill="white"/><rect x="7.5" y="1" width="4.5" height="4.5" rx="1.2" fill="white" opacity=".5"/><rect x="1" y="7.5" width="4.5" height="4.5" rx="1.2" fill="white" opacity=".5"/><rect x="7.5" y="7.5" width="4.5" height="4.5" rx="1.2" fill="white"/></svg>
+      </div>
+      TaskSphere
+    </a>
+    <div class="foot-links">
+      <a href="https://github.com/lenhien06/tasksphere-backend" target="_blank">Backend</a>
+      <a href="https://github.com/lenhien06/tasksphere-frontend" target="_blank">Frontend</a>
+      <a href="#about">Nhóm</a>
+      <a href="#architecture">Kiến trúc</a>
+      <a href="#api">API</a>
+      <a href="https://github.com/lenhien06" target="_blank">GitHub</a>
+    </div>
+    <div class="foot-right">
+      <span class="foot-copy">Made by Lê Thị Bảo Nhiên & team</span>
+      <span class="foot-built">Spring Boot 3 · Next.js 14 · lenhien06</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.07 });
+document.querySelectorAll('.fade').forEach(el => obs.observe(el));
+
+// hero fade in
+const hero = document.querySelector('.hero');
+hero.style.cssText += 'opacity:0;transform:translateY(18px);transition:opacity .75s ease,transform .75s ease';
+setTimeout(() => { hero.style.opacity='1'; hero.style.transform='translateY(0)'; }, 80);
+
+// active nav on scroll
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => { if(window.scrollY >= s.offsetTop - 100) cur = s.id; });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#'+cur ? 'var(--ink)' : '';
+  });
+});
+</script>
+</body>
+</html>
